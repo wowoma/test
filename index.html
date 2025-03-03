@@ -3,47 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Percentage Calculator</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .calculator {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            background-color: #6a1b9a;
+            color: white;
+        }
+        h2 {
+            color: #ffeb3b;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        input, select, button {
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        input {
+            width: 80px;
+            background-color: #ffffff;
+            color: #333;
+            height: 45px;
+            -moz-appearance: textfield;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        select {
+            width: 100%;
+            background-color: #ffffff;
+            color: #333;
+            height: 45px;
+        }
+        button {
+            background-color: #ffeb3b;
+            color: #6a1b9a;
+            font-weight: bold;
+            cursor: pointer;
+            height: 45px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #ffd600;
+        }
+        .result {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            background: white;
+            color: #6a1b9a;
+            padding: 10px;
+            border-radius: 5px;
+            word-wrap: break-word;
+        }
+        @media (max-width: 600px) {
+            .calculator {
+                width: 100%;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About Us</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
+    <div class="calculator">
+        <h2>Percentage Calculator</h2>
+        <select id="operation" onchange="updateLabels()">
+            <option value="percent_of">What is X% of Y?</option>
+            <option value="percentage_of">What percentage of X is Y?</option>
+            <option value="percentage_change">Percentage increase/decrease</option>
+        </select>
+        <div class="input-group" id="input-group">
+            <span id="label1">What</span>
+            <input type="number" id="num1" placeholder="X">
+            <span id="label2">% of</span>
+            <input type="number" id="num2" placeholder="Y">?
+        </div>
+        <button onclick="calculate()">Calculate</button>
+        <button onclick="resetFields()">Reset</button>
+        <div class="result" id="result"></div>
+    </div>
 
-    <section id="home" class="hero">
-        <h1>Welcome to Our Website</h1>
-        <p>Discover more about us and what we do.</p>
-    </section>
+    <script>
+        function updateLabels() {
+            let operation = document.getElementById('operation').value;
+            let label1 = document.getElementById('label1');
+            let label2 = document.getElementById('label2');
+            
+            if (operation === 'percent_of') {
+                label1.innerText = "What";
+                label2.innerText = "% of";
+            } else if (operation === 'percentage_of') {
+                label1.innerText = "What percentage of";
+                label2.innerText = "is";
+            } else if (operation === 'percentage_change') {
+                label1.innerText = "From";
+                label2.innerText = "to";
+            }
+        }
 
-    <section id="about" class="about-section">
-        <h2>About Us</h2>
-        <p>We are a team of passionate individuals dedicated to creating amazing web experiences. Our mission is to deliver high-quality solutions that meet your needs.</p>
-        <button id="learnMoreBtn">Learn More</button>
-        <p id="moreInfo" class="hidden">We specialize in web development, design, and digital marketing. Our team is always ready to take on new challenges and help you achieve your goals.</p>
-    </section>
+        function calculate() {
+            let num1 = parseFloat(document.getElementById('num1').value);
+            let num2 = parseFloat(document.getElementById('num2').value);
+            let operation = document.getElementById('operation').value;
+            let result = document.getElementById('result');
+            let output = '';
 
-    <section id="contact" class="contact-section">
-        <h2>Contact Us</h2>
-        <p>If you have any questions, feel free to reach out to us.</p>
-        <form id="contactForm">
-            <input type="text" id="name" placeholder="Your Name" required>
-            <input type="email" id="email" placeholder="Your Email" required>
-            <textarea id="message" placeholder="Your Message" required></textarea>
-            <button type="submit">Send Message</button>
-        </form>
-    </section>
+            if (isNaN(num1) || isNaN(num2)) {
+                result.innerHTML = "Please enter valid numbers.";
+                return;
+            }
 
-    <footer>
-        <p>&copy; 2023 Your Company. All rights reserved.</p>
-    </footer>
+            if (operation === 'percent_of') {
+                output = `${num1}% of ${num2} is ${(num1 / 100) * num2}`;
+            } else if (operation === 'percentage_of') {
+                output = `${num2} is ${(num2 / num1) * 100}% of ${num1}`;
+            } else if (operation === 'percentage_change') {
+                let change = ((num2 - num1) / num1) * 100;
+                output = `Percentage change: ${change.toFixed(2)}%`;
+            }
+            
+            result.innerHTML = output;
+        }
 
-    <script src="script.js"></script>
+        function resetFields() {
+            document.getElementById('num1').value = '';
+            document.getElementById('num2').value = '';
+            document.getElementById('result').innerHTML = '';
+        }
+    </script>
 </body>
 </html>
